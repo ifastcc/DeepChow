@@ -162,6 +162,27 @@ A: 理论上可以，实际上......还是别了吧。
 4.  **访问 API 文档:**
     服务启动后，可以在浏览器中访问 `http://127.0.0.1:8000/docs` 查看自动生成的交互式 API 文档并进行测试。
 
+### 部署到 Render
+
+本项目可以方便地部署到 [Render](https://render.com/) 平台。
+
+1.  **准备 Git 仓库:** 确保所有项目文件 (`api/`, `main.py`, `requirements.txt`, `sizhu_calculator/`, `paipan/`, `large_model/` 等) 都已提交到 GitHub/GitLab/Bitbucket 等 Git 仓库。
+2.  **在 Render 创建 Web 服务:**
+    - 登录 Render，选择 "New" -> "Web Service"。
+    - 连接你的 Git 仓库。
+    - 配置以下设置：
+      - **Environment:** `Python 3`
+      - **Region:** 选择合适的区域
+      - **Branch:** 选择要部署的分支 (如 `main`)
+      - **Build Command:** `pip install -r requirements.txt` (Render 通常会自动检测并执行此命令)
+      - **Start Command:** `uvicorn api.main:app --host 0.0.0.0 --port $PORT`
+3.  **添加环境变量:**
+    - 在 Render 服务的 "Environment" 设置中，添加以下 Secret Files 或 Environment Variables：
+      - `DEEPSEEK_API_KEY`: 你的 DeepSeek API 密钥
+      - `GEMINI_API_KEY`: 你的 Gemini API 密钥
+4.  **部署:** 点击 "Create Web Service" 或 "Manual Deploy" -> "Deploy latest commit"。
+5.  **访问:** Render 会提供一个 `.onrender.com` 的 URL，用于访问你的 API 服务。
+
 ## 📝 免责声明
 
 本项目纯属娱乐，生成的内容完全基于 AI 模型的胡言乱语，不构成任何形式的建议。作者对您基于本工具做出的任何决定不负任何责任。如果您真的相信了这个工具的分析结果，那么......祝您好运！
