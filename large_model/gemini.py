@@ -1,7 +1,7 @@
 import json
 from datetime import date
 from datetime import datetime
-from google import genai
+import google.generativeai as genai
 
 today = date.today()
 prompt_gemini = [
@@ -68,11 +68,13 @@ prompt_gemini = [
     """
 ]
 
+
 def generate_gemini(api_key, role, name, sex, solar_calendar, lunar_calendar, sizhu, location, dayun_start_age, dayun, yongshen, xishen, jishen, thinking=""):
 
-
     try:
-        client = genai.Client(api_key=api_key)
+        genai.configure(api_key=api_key)
+
+        model = genai.GenerativeModel('gemini-pro')
 
         system_prompt = f"""
             **Role Setup**
@@ -116,13 +118,8 @@ def generate_gemini(api_key, role, name, sex, solar_calendar, lunar_calendar, si
             Please provide the analysis results using the following structure
             {prompt_gemini[role+1]}
         """
-        response = client.models.generate_content(
-        model="gemini-2.0-flash", contents= system_prompt + user_prompt
-        )
-        # response_text = response.text
-        # return json.loads(response_text)
+        response = model.generate_content(contents=system_prompt + user_prompt)
         return response
     except Exception as e:
         print("Error in Gemini API call:", str(e))
-        # generate_gemini(api_key, role, name, sex, solar_calendar, lunar_calendar, sizhu, location, dayun_start_age, dayun, yongshen, xishen, jishen, thinking)
         raise
