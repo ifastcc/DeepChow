@@ -5,4 +5,8 @@ requests
 google-generativeai
 ephem
 borax
-# google-api-python-client # Commented out due to potential conflict with google-generativeai 
+# google-api-python-client # Commented out due to potential conflict with google-generativeai
+ratelimit
+tenacity
+pyrate-limiter
+tiktoken 
