@@ -74,7 +74,7 @@ def generate_gemini(api_key, role, name, sex, solar_calendar, lunar_calendar, si
     try:
         genai.configure(api_key=api_key)
 
-        model = genai.GenerativeModel('gemini-2.5-pro-exp-03-25')
+        model = genai.GenerativeModel('gemini-2.5-pro-preview-05-06')
 
         system_prompt = f"""
             **Role Setup**
