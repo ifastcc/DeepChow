@@ -3,8 +3,8 @@ from datetime import date, datetime
 import google.generativeai as genai
 from ratelimit import limits, sleep_and_retry, RateLimitException
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-# BucketIsEmpty might not be needed with try_acquire but good to have if logic changes
-from pyrate_limiter import Duration, Rate, Limiter, BucketFullException, BucketIsEmpty
+# from pyrate_limiter import Duration, Rate, Limiter, BucketFullException, BucketIsEmpty # Original
+from pyrate_limiter import Duration, Rate, Limiter, BucketFullException  # Corrected
 import tiktoken
 import time  # For sleeping when TPM limit is hit
 import logging

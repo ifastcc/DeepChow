@@ -69,11 +69,20 @@ async def analyze_endpoint(request: AnalyzeRequest):
     """
     接收用户基本信息，调用 DeepChow 分析核心逻辑，返回命理分析报告 (Markdown 格式)。
     """
+    print(
+        f"[API LOG /analyze] Received request for user: {request.name}, Sex: {request.sex}, DOB: {request.year}-{request.month}-{request.day}")
+
+    # 检查 API 密钥是否已配置 (这部分逻辑已存在，但强调其重要性)
+    if DEEPSEEK_API_KEY == "YOUR_DEEPSEEK_API_KEY_HERE" or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY_HERE":
+        print("[API LOG /analyze] CRITICAL ERROR: DeepSeek or Gemini API key is not configured in environment variables!")
+        # 考虑是否应该提前抛出错误，而不是继续执行
+        # raise HTTPException(status_code=500, detail="Server configuration error: API keys not set.")
+
     try:
-        print(f"Received request for: {request.name}")
+        print(
+            f"[API LOG /analyze] Preparing to call core analysis function (deepchow_analyze) for: {request.name}")
         # 调用核心分析函数
         # 注意：原始 analyze 函数可能不是异步的，FastAPI 会在线程池中运行它
-        # 原始 analyze 函数可能直接将结果写入文件，需要修改它以返回字符串
         report_content = deepchow_analyze(
             name=request.name,
             sex=request.sex,
@@ -87,29 +96,39 @@ async def analyze_endpoint(request: AnalyzeRequest):
             deepseek_api_key=DEEPSEEK_API_KEY,
             gemini_api_key=GEMINI_API_KEY
         )
+        print(
+            f"[API LOG /analyze] Core analysis function (deepchow_analyze) completed for: {request.name}")
 
         # 确认 analyze 函数返回的是字符串
         if not isinstance(report_content, str):
-            # 如果 analyze 函数意外地没有返回字符串，则记录错误并返回服务器错误
             print(
-                f"Error: Core analysis function (deepchow_analyze) did not return a string. Returned type: {type(report_content)}")
+                f"[API LOG /analyze] ERROR: Core analysis function (deepchow_analyze) did not return a string. Returned type: {type(report_content)} for user: {request.name}")
             raise HTTPException(
                 status_code=500, detail="Internal server error: Analysis function returned unexpected data type.")
 
-        print(f"Analysis complete for: {request.name}")
+        print(
+            f"[API LOG /analyze] Analysis complete, preparing response for: {request.name}. Report length: {len(report_content)} characters.")
         return AnalyzeResponse(report_markdown=report_content)
 
     except RuntimeError as e:
         # 特别处理导入失败的情况
         if "Failed to import deepchow_analyze" in str(e):
+            print(
+                f"[API LOG /analyze] CRITICAL ERROR: Failed to import core analysis module (deepchow_analyze). Error: {e}")
             raise HTTPException(
                 status_code=500, detail="Internal server error: Core analysis module not loaded.")
         else:
-            print(f"Runtime Error during analysis: {e}")
+            print(
+                f"[API LOG /analyze] RUNTIME ERROR during analysis for {request.name}: {e}")
             raise HTTPException(
                 status_code=500, detail=f"Error during analysis: {e}")
+    except HTTPException as http_e:  # 重新抛出已知的 HTTPException
+        print(
+            f"[API LOG /analyze] HTTP EXCEPTION during processing for {request.name}: {http_e.detail}")
+        raise http_e
     except Exception as e:
-        print(f"Error processing request for {request.name}: {e}")
+        print(
+            f"[API LOG /analyze] UNEXPECTED ERROR processing request for {request.name}: {e}")
         # 避免泄露过多内部细节给客户端
         raise HTTPException(
             status_code=500, detail="Internal server error processing the request.")

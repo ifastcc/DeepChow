@@ -9,7 +9,8 @@ import json
 
 # 选择要测试的 API 地址
 # API_ENDPOINT_URL = RENDER_API_URL
-API_ENDPOINT_URL = "https://deepchow.onrender.com/analyze"  # 默认测试本地
+# API_ENDPOINT_URL = "https://deepchow.onrender.com/analyze"  # 默认测试本地
+API_ENDPOINT_URL = "http://127.0.0.1:8000/analyze"  # 默认测试本地
 
 # --- 准备请求数据 ---
 # 这些数据需要与你的 API 定义的 AnalyzeRequest 模型匹配
@@ -42,7 +43,7 @@ def call_analyze_api(url, payload):
         # 设置 Content-Type header 为 application/json
         headers = {"Content-Type": "application/json"}
         response = requests.post(url, data=json.dumps(
-            payload), headers=headers, timeout=180)  # 增加超时时间
+            payload), headers=headers, timeout=1800)  # 增加超时时间
 
         # 检查响应状态码
         if response.status_code == 200:
