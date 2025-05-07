@@ -9,8 +9,8 @@ import json
 
 # 选择要测试的 API 地址
 # API_ENDPOINT_URL = RENDER_API_URL
-# API_ENDPOINT_URL = "https://deepchow.onrender.com/analyze"  # 默认测试本地
-API_ENDPOINT_URL = "http://127.0.0.1:8000/analyze"  # 默认测试本地
+API_ENDPOINT_URL = "https://deepchow-7kd0.onrender.com/analyze"  # 默认测试本地
+# API_ENDPOINT_URL = "http://127.0.0.1:8000/analyze"  # 默认测试本地
 
 # --- 准备请求数据 ---
 # 这些数据需要与你的 API 定义的 AnalyzeRequest 模型匹配
